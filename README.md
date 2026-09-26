@@ -165,7 +165,7 @@ references/        Tampermonkey 公式情報の要約
 
 ### Claude Code で開発する（任意）
 
-- リポジトリの `CLAUDE.md` に開発の前提をまとめている
+- 開発の前提はリポジトリの `AGENTS.md` にまとめている（Claude Code は組み込みプラグイン `agents-md` の既定設定で読み込む。Codex 等も同じファイルを読む）。`/config` の「Project instructions」を `claude-md`（CLAUDE.md のみ）にしていると読まれない
 - **Tampermonkey MCP**（`.mcp.json` に登録済み）を使うと、インストール済みスクリプトの一覧・内容・保存値を Claude Code から確認できる
   1. Chrome に [Tampermonkey Editors](https://chromewebstore.google.com/detail/lieodnapokbjkkdkhdljlllmgkmdokcm) を入れる
   2. Claude Code を起動し、プロジェクトの MCP サーバー `tampermonkey` を承認する
