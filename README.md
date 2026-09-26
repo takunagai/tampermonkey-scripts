@@ -188,7 +188,7 @@ references/        Tampermonkey 公式情報の要約
 - 配布物は圧縮しない（インストール前に読める）。CI がソースからの再生成と一致するかを検査
 - 依存パッケージは版を固定し、公開直後の版は入れない。GitHub Actions はコミット SHA で固定
 
-脆弱性や問題は [Issues](https://github.com/takunagai/tampermonkey-scripts/issues) へ。
+不具合・要望は [Issues](https://github.com/takunagai/tampermonkey-scripts/issues) へ。脆弱性は公開の Issue にせず、[Security タブの「Report a vulnerability」](https://github.com/takunagai/tampermonkey-scripts/security/advisories/new)から非公開で報告してほしい。
 
 ## 参考資料
 
