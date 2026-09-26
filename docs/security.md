@@ -29,6 +29,8 @@
 | 内容を変えたら `@version` を上げる | 配布物検査（HEAD / CI の比較元と比較） |
 | 配布物は圧縮しない（利用者が読める） | ビルド設定 `minify: false` |
 | `dist/` はソースから再生成したものと一致 | CI |
+| 非公開スクリプト（`private/`）とそのビルド（`dist-private/`）を公開リポジトリに入れない | `.gitignore` + 配布物検査（除外されていなければエラー）。配信 URL を持たない（`definePrivateUserscript` が `@downloadURL none`） |
+| 公開スクリプトが非公開のコードを取り込まない（`dist/` に混ざるのを防ぐ） | ビルド（`tools/build.ts` の `guard-private-imports`） |
 | 依存は版固定 + lockfile、公開直後の版は入れない | `--save-exact`、pnpm 11 の minimumReleaseAge 既定、Dependabot の cooldown |
 | GitHub Actions はコミット SHA で固定、`contents: read` のみ | `.github/workflows/ci.yml` |
 

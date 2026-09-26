@@ -19,7 +19,9 @@ pnpm check                      # lint → typecheck → test → build → chec
 pnpm lint / pnpm format         # Biome（format は安全な自動修正込み）
 pnpm typecheck                  # tsc -p tsconfig.json（src・tests）と tsc -p tsconfig.node.json（tools）
 pnpm test src/<slug>/app.test.ts -t "テスト名"   # 単体テスト（Vitest）
-pnpm build                      # dist/ を毎回作り直す（_ 始まりは除外）
+pnpm build                      # 公開スクリプトの dist/ を毎回作り直す（_ 始まりは除外）
+pnpm build:private              # 非公開スクリプト（private/）を dist-private/ に出力
+pnpm new <slug> --private …     # 非公開スクリプトを private/<slug> に作成
 node tools/check-dist.ts --base <ref>           # 配布物検査。比較元を指定（既定 HEAD）
 ```
 
@@ -35,6 +37,13 @@ Node 26 / pnpm 11.21.0（`mise.toml`）。`tools/*.ts` は Node の型ストリ�
 - `_` 始まりのスクリプト（`src/_template` 等）は開発専用。`pnpm build` の対象外で、`@downloadURL none`
 - 出力: `pnpm dev` → `dist-dev/`（git 管理外）、`pnpm build` → `dist/`（コミット対象・配布物）。非圧縮（`minify: false`）で利用者が読める形を保つ
 - `meta.ts` は `pnpm dev` 起動時に 1 回だけ読む。変えたら dev を再起動する
+
+### 非公開スクリプト（`private/`）
+
+- `private/<slug>/` は公開リポジトリでは git 管理外（`.gitignore`）で、`private/` 自体が別の private リポジトリ（`src/shared/meta.ts` の `PRIVATE_REPOSITORY`）。コミットは `private/` の中で行い、公開リポジトリ側のコミット・PR に非公開の内容（コード・スクリプト名・対象 URL）を書かない
+- メタデータは `definePrivateUserscript`（`@downloadURL none`、公開リポジトリへのリンクなし）。`pnpm build:private` → `dist-private/`（git 管理外）。`pnpm dev` / `pnpm check` は公開・非公開の両方を扱う。slug は両者で一意
+- `tools/lib/scripts.ts` の `listAllScripts()` が両方を列挙し、`listScripts()` は公開分だけ（配布物・`check:dist` の対象）
+- 流出防止: `check:dist` が `private/` `dist-private/` の git 除外を検査。`tools/build.ts` の `guard-private-imports` が公開スクリプトからの `private/` の import でビルドを失敗させる。Biome は `private/` も lint するため `vcs.useIgnoreFile: false` にして除外を `files.includes` で明示している
 
 ### GM API と `@grant`
 

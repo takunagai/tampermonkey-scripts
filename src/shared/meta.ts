@@ -40,8 +40,7 @@ export const distUrls = (slug: string) => ({
   updateURL: `${DIST_BASE_URL}/${slug}.meta.js`,
 });
 
-/** プロジェクト共通の既定値を適用したメタデータを作る */
-export function defineUserscript(slug: string, meta: ScriptMeta): MonkeyUserScript {
+function assertValidMeta(slug: string, meta: ScriptMeta): void {
   if (!isValidSlug(slug)) {
     throw new Error(`Invalid slug: "${slug}" (kebab-case のみ)`);
   }
@@ -51,6 +50,11 @@ export function defineUserscript(slug: string, meta: ScriptMeta): MonkeyUserScri
   if (meta.match.length === 0) {
     throw new Error(`${slug}: match を 1 つ以上指定する`);
   }
+}
+
+/** 公開スクリプト（src/<slug>）のメタデータ。共通の既定値と配信 URL を埋める */
+export function defineUserscript(slug: string, meta: ScriptMeta): MonkeyUserScript {
+  assertValidMeta(slug, meta);
   return {
     namespace: REPOSITORY_URL,
     author: 'Taku Nagai',
@@ -62,5 +66,26 @@ export function defineUserscript(slug: string, meta: ScriptMeta): MonkeyUserScri
     ...meta,
     // 開発専用（_ 始まり）は配信しないので更新確認自体を止める
     ...(isDevOnlySlug(slug) ? { downloadURL: 'none' } : distUrls(slug)),
+  };
+}
+
+// 非公開スクリプト（private/<slug>）の置き場。private/ はこのリポジトリでは git 管理外で、別の private リポジトリとして管理する
+export const PRIVATE_REPOSITORY = 'takunagai/tampermonkey-scripts-private';
+export const PRIVATE_NAMESPACE = `https://github.com/${PRIVATE_REPOSITORY}`;
+
+/**
+ * 非公開スクリプトのメタデータ。配信しないので @downloadURL none で更新確認を止め、
+ * 公開リポジトリを指す @homepageURL / @supportURL は付けない
+ */
+export function definePrivateUserscript(slug: string, meta: ScriptMeta): MonkeyUserScript {
+  assertValidMeta(slug, meta);
+  return {
+    namespace: PRIVATE_NAMESPACE,
+    author: 'Taku Nagai',
+    license: 'UNLICENSED',
+    noframes: true,
+    'run-at': 'document-idle',
+    ...meta,
+    downloadURL: 'none',
   };
 }

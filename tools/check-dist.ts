@@ -7,7 +7,7 @@ import { readdir, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { parseArgs } from 'node:util';
 import { checkUserscript, type Issue } from './lib/policy.ts';
-import { DIST_DIR, listScripts, ROOT } from './lib/scripts.ts';
+import { DIST_DIR, listScripts, PRIVATE_IGNORE_PROBES, ROOT } from './lib/scripts.ts';
 
 const DIST_FILE_PATTERN = /^(.+)\.(user|meta)\.js$/;
 
@@ -40,6 +40,16 @@ const results = new Map<string, Issue[]>();
 const report = (target: string, issue: Issue) => {
   results.set(target, [...(results.get(target) ?? []), issue]);
 };
+
+// 非公開スクリプトとそのビルドが公開リポジトリに入らないこと（.gitignore の除外）を確かめる
+for (const probe of PRIVATE_IGNORE_PROBES) {
+  if (git(['check-ignore', '--quiet', '--no-index', probe]) === null) {
+    report('.gitignore', {
+      level: 'error',
+      message: `${probe.split('/')[0]}/ が git の除外対象になっていない（非公開スクリプトが公開される）`,
+    });
+  }
+}
 
 for (const file of distFiles) {
   const slug = DIST_FILE_PATTERN.exec(file)?.[1];

@@ -26,6 +26,7 @@ TypeScript で書いたユーザースクリプトを vite-plugin-monkey でビ�
 | `src/<slug>/README.md` | 利用者向け説明（機能・権限と理由・変更履歴）。`@homepageURL` の参照先 |
 | `src/shared/` | 共通処理（`meta.ts` 配信 URL と既定値 / `dom.ts` 要素待ち / `log.ts` ロガー） |
 | `src/_template/` | ひな形。`pnpm new` のコピー元 |
+| `private/<slug>/` | 非公開スクリプト（git 管理外。別の private リポジトリ。README「非公開スクリプト」） |
 | `tests/` | GM API スタブ（`gm-stub.ts`）とテスト共通設定 |
 | `tools/` | ビルド・ひな形生成・配布物検査（Node 26 が TypeScript を直接実行） |
 | `biome-plugins/` | Biome の独自ルール（HTML シンク・動的コード実行の禁止） |
@@ -46,6 +47,13 @@ pnpm new my-site-tweaks --name "My Site Tweaks" --description "何をするか" 
 
 - `src/my-site-tweaks/` にひな形ができる。`--match` は複数指定できる。対象は必要な範囲に絞る
 - GM API を 1 つも使わないスクリプトは `meta.ts` に `grant: 'none'` を書く（配布物検査が `@grant` の明示を求める）
+
+## 非公開スクリプト
+
+- 作成: `pnpm new <slug> --private ...`（`private/` が非公開リポジトリとして用意されていないと止まる）。メタデータは `definePrivateUserscript`（`@downloadURL none`、namespace は非公開リポジトリ）
+- 開発ループは公開スクリプトと同じ（`pnpm dev <slug>` → Track from disk）。常用版を入れておくなら `pnpm build:private` の `dist-private/<slug>.user.js` を Track from disk で追跡する
+- 共通モジュールは `../../src/shared/...` で import する（ひな形の生成時に書き換わる）。逆向き（公開スクリプトから `private/`）の import はビルドが止める
+- コミット・push は `private/` の中で行う。公開リポジトリの CI は `private/` を見ないので、`pnpm check` はローカルで必ず通す
 
 ## 開発ループ
 
