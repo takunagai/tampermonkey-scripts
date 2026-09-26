@@ -1,6 +1,9 @@
 node_modules/
 # 開発ビルド（Track from disk で追跡する側）。配布物は dist/ でコミット対象
 dist-dev/
+# 非公開スクリプト（別の private リポジトリ）とそのビルド。この公開リポジトリには絶対に入れない
+private/
+dist-private/
 coverage/
 .firecrawl/
 *.log

@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { DIST_BASE_URL, defineUserscript, REPOSITORY_URL } from './meta.ts';
+import {
+  DIST_BASE_URL,
+  definePrivateUserscript,
+  defineUserscript,
+  PRIVATE_NAMESPACE,
+  REPOSITORY_URL,
+} from './meta.ts';
 
 const base = {
   name: 'Sample',
@@ -29,5 +35,14 @@ describe('defineUserscript', () => {
     expect(() => defineUserscript('Bad_Slug', base)).toThrow();
     expect(() => defineUserscript('sample', { ...base, version: '1.0' })).toThrow();
     expect(() => defineUserscript('sample', { ...base, match: [] })).toThrow();
+  });
+
+  it('非公開スクリプトは配信 URL と公開リポジトリへのリンクを持たない', () => {
+    const meta = definePrivateUserscript('my-private', base);
+    expect(meta).toMatchObject({ namespace: PRIVATE_NAMESPACE, downloadURL: 'none' });
+    expect(meta.updateURL).toBeUndefined();
+    expect(meta.homepageURL).toBeUndefined();
+    expect(meta.supportURL).toBeUndefined();
+    expect(JSON.stringify(meta)).not.toContain(`${REPOSITORY_URL}/`);
   });
 });

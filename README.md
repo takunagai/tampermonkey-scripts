@@ -113,13 +113,14 @@ pnpm new my-site-tweaks \
 
 | コマンド | 内容 |
 |---|---|
-| `pnpm dev <slug>` | 開発ビルド（`dist-dev/`、変更を監視） |
-| `pnpm new <slug> ...` | ひな形から新規作成 |
+| `pnpm dev <slug>` | 開発ビルド（`dist-dev/`、変更を監視）。公開・非公開どちらも |
+| `pnpm new <slug> ...` | ひな形から新規作成（`--private` で非公開） |
 | `pnpm check` | 品質ゲート一式（lint → 型 → テスト → ビルド → 配布物検査） |
 | `pnpm lint` / `pnpm format` | Biome による検査 / 整形と安全な自動修正 |
 | `pnpm typecheck` | TypeScript の型検査 |
 | `pnpm test` | テスト（`pnpm test src/<slug>/app.test.ts -t "名前"` で絞り込み、`pnpm test:watch` で監視） |
-| `pnpm build` | 配布ビルド（`dist/` を作り直す。`_` で始まるスクリプトは除外） |
+| `pnpm build` | 配布ビルド（公開スクリプトだけを `dist/` に作り直す。`_` で始まるスクリプトは除外） |
+| `pnpm build:private` | 非公開スクリプトのビルド（`dist-private/`、git 管理外） |
 | `pnpm check:dist` | 配布物のポリシー検査 |
 
 ### ディレクトリ構成
@@ -134,9 +135,41 @@ tools/             ビルド・ひな形生成・配布物検査（TypeScript �
 biome-plugins/     Biome の独自ルール（HTML 文字列の流し込み・動的コード実行の禁止）
 dist/              配布物（コミット対象。CI がソースと一致するか検査）
 dist-dev/          開発ビルド（git 管理外）
+private/           非公開スクリプト（git 管理外。別の private リポジトリ）
+dist-private/      非公開スクリプトのビルド（git 管理外）
 docs/              開発プロセス・セキュリティ規約
 references/        Tampermonkey 公式情報の要約
 ```
+
+### 非公開スクリプト
+
+公開したくないスクリプト（社内・個人用など）は `private/` に置く。`private/` はこのリポジトリでは git 管理外で、別の private リポジトリとして管理する。ツール（ビルド・lint・型・テスト・ひな形）は公開スクリプトと共通。
+
+| | 公開（`src/<slug>/`） | 非公開（`private/<slug>/`） |
+|---|---|---|
+| git | このリポジトリ（public） | `private/` の中の別リポジトリ（private） |
+| 作成 | `pnpm new <slug> ...` | `pnpm new <slug> --private ...` |
+| メタデータ | `defineUserscript` | `definePrivateUserscript`（`@downloadURL none`、公開リポジトリへのリンクなし） |
+| ビルド | `pnpm build` → `dist/`（配信） | `pnpm build:private` → `dist-private/`（配信しない） |
+| 開発 | `pnpm dev <slug>` | 同じ |
+| Tampermonkey へ | 配信 URL からインストール・自動更新 | Track from disk で入れる（自動更新なし） |
+| lint・型・テスト | `pnpm check` | 同じ（`private/` も対象） |
+
+初期設定（初回のみ。どちらか）:
+
+```bash
+# 既存の非公開リポジトリがある場合
+git clone git@github.com:<owner>/tampermonkey-scripts-private.git private
+
+# 新しく作る場合
+mkdir private && cd private && git init -b main
+gh repo create <owner>/tampermonkey-scripts-private --private --source . --remote origin
+```
+
+- `slug` は公開・非公開をまたいで一意にする
+- 非公開スクリプトの変更は `private/` の中でコミット・push する（`cd private && git add … && git commit && git push`）
+- 流出防止: `private/` と `dist-private/` が git の除外対象でなければ `pnpm check:dist` が失敗する。公開スクリプトが `private/` のコードを import するとビルドが失敗する
+- フォークした場合は `src/shared/meta.ts` の `PRIVATE_REPOSITORY` も自分のものに変える
 
 ### テスト
 
@@ -154,7 +187,7 @@ references/        Tampermonkey 公式情報の要約
 
 ### フォークして自分用に使う
 
-1. `src/shared/meta.ts` の `REPOSITORY`（配信元）と `author` を自分のものに変える
+1. `src/shared/meta.ts` の `REPOSITORY`（配信元）・`PRIVATE_REPOSITORY`（非公開スクリプトの置き場）と `author` を自分のものに変える
 2. `LICENSE` の著作権者を変える
 3. 配信 URL が変わるので、残すスクリプトは `meta.ts` の `version` を上げてから `pnpm build`
 4. GitHub の Settings で次を設定する（本リポジトリと同じ構成）

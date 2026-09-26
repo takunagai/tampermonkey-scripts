@@ -3,10 +3,21 @@
   "vcs": {
     "enabled": true,
     "clientKind": "git",
-    "useIgnoreFile": true
+    "useIgnoreFile": false
   },
   "files": {
-    "includes": ["**", "!dist", "!dist-dev", "!references", "!.mcp.json", "!.claude"]
+    "includes": [
+      "**",
+      "!node_modules",
+      "!dist",
+      "!dist-dev",
+      "!dist-private",
+      "!coverage",
+      "!.firecrawl",
+      "!references",
+      "!.mcp.json",
+      "!.claude"
+    ]
   },
   "formatter": {
     "enabled": true,
