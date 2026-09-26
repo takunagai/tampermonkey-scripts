@@ -1,6 +1,8 @@
-# CLAUDE.md
+# AGENTS.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to AI coding agents (Claude Code, Codex, etc.) when working with code in this repository.
+
+Claude Code は組み込みプラグイン `agents-md`（既定モード `claude-md-or-agents-md`）でこのファイルを `CLAUDE.md` と同じ扱いで読み込む。`CLAUDE.md` を置くとこのファイルは読まれなくなるので作らない。個人用の指示は `CLAUDE.local.md` ではなく `~/.claude/CLAUDE.md` に書く（`CLAUDE.local.md` があると「プロジェクト独自の指示あり」と判定され、このファイルが読まれない）。
 
 ## 概要
 
