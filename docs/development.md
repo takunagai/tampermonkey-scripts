@@ -108,7 +108,7 @@ pnpm check   # lint → typecheck → test → build → check:dist
   - 接続直後に `tampermonkey_list` の結果がダッシュボードの実物と一致するか確認する（なりすまし検知。`references/tampermonkey-mcp.md`）
   - 用途: インストール済みスクリプトの版・内容とリポジトリの差分確認、ストレージの確認。`patch` / `put` / `delete` は権限設定で毎回確認になる
   - Chrome 安定版（5.5.0）では `put` / `delete` は使えない（5.6+ が必要）
-- **chrome-devtools MCP**（ユーザー設定済み）: ログイン済みの実ページで、スクリプトの反映をスナップショット・コンソールで確認する
+- **chrome-devtools MCP**（user scope。導入手順は README「Claude Code で開発する」）: ログイン済みの実ページで、スクリプトの反映をスナップショット・コンソールで確認する。Chrome の `chrome://inspect/#remote-debugging` で許可し、`--autoConnect` で普段使いの Chrome に接続する
 
 ## トラブルシュート
 
