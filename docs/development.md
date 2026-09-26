@@ -58,7 +58,9 @@ pnpm new my-site-tweaks --name "My Site Tweaks" --description "何をするか" 
 
 注意:
 
+- `pnpm dev` は 1 本ずつ。複数のスクリプトを同時に開発するときは、ターミナルを分けて 1 本ずつ起動し、Tampermonkey のエディタタブもスクリプトごとに開いておく
 - 開発ビルドと配布版は同じ `@name` / `@namespace` なので、Tampermonkey 上では同じスクリプトとして上書きされる
+- スクリプトはページの読み込み時に注入される。インストール・更新の前から開いていたタブには、再読み込みするまで反映されない
 - 追跡中はエディタで直接編集できない（ディスク側が正）
 - 動作確認はブラウザの DevTools コンソール（ログは `[<slug>]` 接頭辞付き）か、Claude Code の chrome-devtools MCP で行う
 
@@ -67,6 +69,10 @@ pnpm new my-site-tweaks --name "My Site Tweaks" --description "何をするか" 
 - `pnpm test`（`pnpm test:watch` で監視）。環境は happy-dom
 - `import { GM_* } from '$'` はテスト時 `tests/gm-stub.ts` に差し替わる。呼び出し回数は `gm.GM_addStyle` 等で検証する。足りない API はスタブに追加する
 - 最低限テストすること: 二重実行しても結果が 1 回分であること、対象要素が無いときに例外を出さないこと、タイマー・監視を止める経路があること
+- タイマーは `vi.useFakeTimers()` と `vi.advanceTimersByTime()`、タブの表示状態は `document.hidden` を `Object.defineProperty` で差し替えて `visibilitychange` を発火する、SPA の URL は `history.pushState()` で変える（`src/zai-usage-auto-refresh/app.test.ts` が実例）
+- happy-dom の制約（実ブラウザで確認して、テストには注記を残す）
+  - レイアウトを計算しないので、`checkVisibility()` や要素の大きさは要素ごとに差し替えて与える
+  - インライン指定に対する `letter-spacing: normal !important` の優先を再現しない（`text-transform` や `font-stretch` は再現する）
 
 ## 品質ゲート
 

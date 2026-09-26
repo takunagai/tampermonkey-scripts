@@ -39,7 +39,13 @@ Node 26 / pnpm 11.21.0（`mise.toml`）。`tools/*.ts` は Node の型ストリ�
 - GM API は `import { GM_addStyle } from '$'` で使う（vite-plugin-monkey の client。型は `src/env.d.ts` の参照）。グローバルの `GM_*` を直接書かない（`@types/tampermonkey` も入れていない）
 - `@grant` は使った API から自動収集（`autoGrant`）。GM API を使わないスクリプトは `meta.ts` に `grant: 'none'` を明示する（`check:dist` が `@grant` の明示を要求）
 - テストでは `vitest.config.ts` の alias で `$` が `tests/gm-stub.ts` に差し替わる。スタブに無い API を使ったらスタブに追加する
-- スクリプトは `main.ts`（`start()` を呼ぶだけ）と `app.ts`（処理本体・テスト対象）に分ける
+- スクリプトは `main.ts`（`start()` を呼ぶだけ）と `app.ts`（処理本体・テスト対象）に分ける。各スクリプトの仕様・権限の理由は `src/<slug>/README.md`（`@homepageURL` の参照先で利用者も読む）。挙動や権限を変えたら README も更新する
+- happy-dom はレイアウトを計算しない（`checkVisibility()` は要素ごとに差し替える）。インライン指定に対する `letter-spacing: normal !important` の優先も再現しない。実ブラウザで確認した事実はテストにコメントで残す
+
+### 実装済みスクリプトの設計判断
+
+- `nous-portal-readability`: サイトのフォント指定がクラス・CSS 変数・要素ごとに散らばるため、クラス名に依存せず `html *` に `!important` で文字まわり（font-family / font-stretch / font-variation-settings / text-transform / letter-spacing）だけを上書きする。サイト内蔵の `html.hpv2-a11y` モードは配色まで変わるので使っていない。等幅の役割の要素（`[class*="font-mono"]`）は本物の等幅フォントにする（サイトの `--font-mono` は長体フォント）
+- `zai-usage-auto-refresh`: SPA のため `@match` は `/manage-apikey/*`、押すかどうかは毎回パスで判定する。誤クリックを避けるため、`aria-label="Refresh"` + `svg.lucide-rotate-ccw` + `type="button"` + 表示中の候補がちょうど 1 つのときだけ押す。タブ非表示中は押さない
 
 ### セキュリティゲート（`docs/security.md` と一致させる）
 

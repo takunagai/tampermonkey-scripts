@@ -17,10 +17,12 @@
 
 ## 収録スクリプト
 
-現在、配布中のスクリプトは無い（追加したらこの表に追記する）。
+| スクリプト | 対象ページ | 概要 | 権限 | インストール |
+|---|---|---|---|---|
+| [Nous Portal Readability](src/nous-portal-readability/) | `portal.nousresearch.com` | 長体フォント・大文字化・広い字間を通常の表示に戻す（見た目のみ） | `GM_addStyle` | [install](https://raw.githubusercontent.com/takunagai/tampermonkey-scripts/main/dist/nous-portal-readability.user.js) |
+| [Z.ai Usage Auto Refresh](src/zai-usage-auto-refresh/) | `z.ai` GLM Coding Plan の Usage | リフレッシュボタンを 1 分ごとに自動で押す（タブ非表示中は停止） | なし（`@grant none`） | [install](https://raw.githubusercontent.com/takunagai/tampermonkey-scripts/main/dist/zai-usage-auto-refresh.user.js) |
 
-| スクリプト | 対象ページ | 概要 | インストール |
-|---|---|---|---|
+スクリプトを追加したら、この表に 1 行足す。
 
 ## 使う（インストール）
 
@@ -169,7 +171,7 @@ references/        Tampermonkey 公式情報の要約
 
 | 症状 | 確認すること |
 |---|---|
-| スクリプトが動かない | 「ユーザー スクリプトを許可する」がオンか / Tampermonkey とスクリプトが有効か / `@match` が URL に合っているか |
+| スクリプトが動かない | 「ユーザー スクリプトを許可する」がオンか / Tampermonkey とスクリプトが有効か / `@match` が URL に合っているか / インストール前から開いていたタブを再読み込みしたか（スクリプトは読み込み時に注入される） |
 | File メニューに Track from disk が無い | 「設定のモード」が「上級者」か |
 | 変更が反映されない | エディタに「…の変更を追跡しています。」が出ているか（出ていなければ、保存済みスクリプトの編集画面で Track from disk をやり直す）/ `pnpm dev` が動いているか / ページをリロードしたか |
 | "Limited runtime host permissions" と出る | 「サイトへのアクセス」を「すべてのサイト」に |
