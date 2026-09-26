@@ -15,14 +15,14 @@
 | ルール | 強制する仕組み |
 |---|---|
 | `innerHTML` / `outerHTML` / `insertAdjacentHTML` / `document.write` / `setHTMLUnsafe` / `createContextualFragment` を使わない | Biome プラグイン `biome-plugins/no-html-sinks.grit` |
-| `eval` / `new Function` / 文字列を渡す `setTimeout`・`setInterval` を使わない | Biome `noGlobalEval` + `biome-plugins/no-dynamic-code.grit`、配布物検査 |
+| `eval` / `new Function` / 文字列を渡す `setTimeout`・`setInterval` を使わない | ソース: Biome `noGlobalEval` + `biome-plugins/no-dynamic-code.grit`。配布物（バンドルされた依存を含む）: 配布物検査が `eval` と `new Function` を検出 |
 | 高リスク GM API（`unsafeWindow` `GM_cookie` `GM_xmlhttpRequest` `GM_webRequest` `GM_download` `GM`）の import は理由付きの抑止コメントが必要 | Biome `noRestrictedImports` |
 | Promise の放置・誤用をしない | Biome `noFloatingPromises` / `noMisusedPromises` |
 | `console.log` を残さない（`info` / `warn` / `error` のみ） | Biome `noConsole` |
 | 型の厳格化（`strict` / `noUncheckedIndexedAccess` / `exactOptionalPropertyTypes`） | TypeScript |
 | `@grant` は使った API だけ（自動収集）。GM API 不使用なら `@grant none` を明示 | vite-plugin-monkey `autoGrant` + 配布物検査 |
 | `@include` / `@unwrap` / `@webRequest` / `@sandbox DOM` を使わない | 配布物検査 |
-| 全サイト対象の `@match`（`*://*/*` 等）を使わない | 配布物検査（例外は `tools/lib/policy.ts` の `ALLOW_ALL_SITES` にコード変更で追加） |
+| 全サイト対象の `@match`（`*://*/*`・`https://*.com/*`・`https://*.co.jp/*` 等）を使わない | 配布物検査（例外は `tools/lib/policy.ts` の `ALLOW_ALL_SITES` にコード変更で追加） |
 | `@connect *` を使わない | 配布物検査 |
 | `@require` / `@resource` は https + SRI ハッシュ（sha256/384/512）必須 | 配布物検査 |
 | `@downloadURL` / `@updateURL` / `@namespace` は本リポジトリの配信元と一致 | `defineUserscript` + 配布物検査 |
@@ -55,6 +55,7 @@
 
 - main へは PR 経由でマージし、CI 成功を必須にする（GitHub の Branch protection / Rulesets。リポジトリ作成後に設定）
 - GitHub アカウントは 2 要素認証を有効にする
+- GitHub のユーザー名・リポジトリ名を変えない。変えると旧名を第三者が取得して同名リポジトリを作り、導入済みの利用者全員へ更新を配れる（repojacking）。変える必要があるときは、先に全スクリプトの配信 URL を新しい場所へ移して版を上げ、利用者に行き渡ってから変える
 - `dist/` だけを手で編集しない（CI の再生成一致チェックで落ちる）
 
 ## Tampermonkey 側の設定

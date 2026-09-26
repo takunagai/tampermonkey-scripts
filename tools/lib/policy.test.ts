@@ -68,6 +68,23 @@ describe('checkUserscript', () => {
     expect(errors(run(lines))).toContainEqual(expect.stringContaining('広すぎる'));
   });
 
+  it.each(['https://*/*', 'https://*.com/*', 'https://*.co.jp/*', '<all_urls>'])(
+    '全サイト相当の @match（%s）を禁止する',
+    (pattern) => {
+      const lines = validHeaderLines().map((line) =>
+        line.includes('@match') ? `// @match        ${pattern}` : line,
+      );
+      expect(errors(run(lines))).toContainEqual(expect.stringContaining('広すぎる'));
+    },
+  );
+
+  it('特定ドメイン配下のワイルドカードは通す', () => {
+    const lines = validHeaderLines().map((line) =>
+      line.includes('@match') ? '// @match        https://*.nousresearch.com/*' : line,
+    );
+    expect(errors(run(lines))).toEqual([]);
+  });
+
   it('@connect * を禁止する', () => {
     const lines = [...validHeaderLines({ grant: ['GM_xmlhttpRequest'] }), '// @connect *'];
     expect(errors(run(lines, { body: '\nGM_xmlhttpRequest({});\n' }))).toContainEqual(

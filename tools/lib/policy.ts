@@ -34,7 +34,9 @@ const FORBIDDEN_KEYS: Record<string, string> = {
 
 const VERSION_PATTERN = /^\d+\.\d+\.\d+$/;
 const SRI_PATTERN = /#(?:[^#]*[,;])?(?:sha256|sha384|sha512)[=-][A-Za-z0-9+/_-]+=*/;
-const ALL_SITES_PATTERN = /^(?:<all_urls>|[^:]+:\/\/(?:\*|\*\.[^./]+)\/)/;
+// ホスト全体のワイルドカード、または *.com / *.co.jp のように公開サフィックス相当だけを指すもの
+const ALL_SITES_PATTERN =
+  /^(?:<all_urls>|[^:]+:\/\/(?:\*|\*\.[^./]+|\*\.[a-z0-9]{2,3}\.[a-z]{2})\/)/i;
 const GM_USAGE_PATTERN = /\bGM_(?!info\b)[A-Za-z]+|\bGM\.[A-Za-z]+|\bunsafeWindow\b/;
 const DYNAMIC_CODE_PATTERN = /\beval\s*\(|\bnew\s+Function\s*\(/;
 const XHR_GRANTS = new Set(['GM_xmlhttpRequest', 'GM.xmlHttpRequest']);
