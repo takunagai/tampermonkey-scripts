@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__tampermonkey__tampermonkey_get_connection_code",
+      "mcp__tampermonkey__tampermonkey_list",
+      "mcp__tampermonkey__tampermonkey_get",
+      "Bash(pnpm check)",
+      "Bash(pnpm lint)",
+      "Bash(pnpm typecheck)",
+      "Bash(pnpm test)",
+      "Bash(pnpm build)",
+      "Bash(pnpm check:dist)"
+    ],
+    "ask": [
+      "mcp__tampermonkey__tampermonkey_patch",
+      "mcp__tampermonkey__tampermonkey_put",
+      "mcp__tampermonkey__tampermonkey_delete"
+    ]
+  }
+}

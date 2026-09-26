@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "tampermonkey": {
+      "type": "stdio",
+      "command": "pnpm",
+      "args": [
+        "--reporter=silent",
+        "exec",
+        "tampermonkey-mcp"
+      ],
+      "env": {}
+    }
+  }
+}

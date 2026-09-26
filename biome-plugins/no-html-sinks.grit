@@ -1,0 +1,15 @@
+// HTML 文字列をページに流し込む API（DOM based XSS のシンク）を一律禁止する。
+// 要素は createElement、文字は textContent で組み立てる。docs/security.md 参照
+or {
+  `$target.innerHTML = $value`,
+  `$target.innerHTML += $value`,
+  `$target.outerHTML = $value`,
+  `$target.outerHTML += $value`,
+  `$target.insertAdjacentHTML($position, $html)`,
+  `$target.setHTMLUnsafe($html)`,
+  `$range.createContextualFragment($html)`,
+  `document.write($content)`,
+  `document.writeln($content)`
+} as $sink where {
+  register_diagnostic(span=$sink, message="HTML 文字列を DOM に流し込む API は禁止（XSS の経路になる）。createElement + textContent で組み立てる", severity="error")
+}

@@ -1,0 +1,9 @@
+node_modules/
+# 開発ビルド（Track from disk で追跡する側）。配布物は dist/ でコミット対象
+dist-dev/
+coverage/
+.firecrawl/
+*.log
+.DS_Store
+# Claude Code の個人設定
+.claude/settings.local.json

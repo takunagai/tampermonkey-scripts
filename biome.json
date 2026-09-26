@@ -1,0 +1,89 @@
+{
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "files": {
+    "includes": ["**", "!dist", "!dist-dev", "!references", "!.mcp.json", "!.claude"]
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 100
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "single",
+      "semicolons": "always",
+      "trailingCommas": "all"
+    }
+  },
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
+  },
+  "plugins": ["./biome-plugins/no-html-sinks.grit", "./biome-plugins/no-dynamic-code.grit"],
+  "linter": {
+    "enabled": true,
+    "domains": {
+      "types": "all"
+    },
+    "rules": {
+      "preset": "recommended",
+      "security": {
+        "noGlobalEval": "error"
+      },
+      "suspicious": {
+        "noConsole": {
+          "level": "error",
+          "options": {
+            "allow": ["info", "warn", "error"]
+          }
+        },
+        "noUnnecessaryConditions": "off"
+      },
+      "style": {
+        "noRestrictedImports": {
+          "level": "error",
+          "options": {
+            "paths": {
+              "$": {
+                "importNames": [
+                  "unsafeWindow",
+                  "GM_cookie",
+                  "GM_xmlhttpRequest",
+                  "GM_webRequest",
+                  "GM_download",
+                  "GM"
+                ],
+                "message": "高リスクの GM API。使うなら直前に `// biome-ignore lint/style/noRestrictedImports: <必要な理由>` を書き、docs/security.md の追加確認を行う（GM.* は GM_* 形式で書く）"
+              }
+            }
+          }
+        }
+      },
+      "nursery": {
+        "noFloatingPromises": "error",
+        "noMisusedPromises": "error"
+      }
+    }
+  },
+  "overrides": [
+    {
+      "includes": ["tools/**", "*.config.ts"],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noConsole": "off"
+          }
+        }
+      }
+    }
+  ]
+}

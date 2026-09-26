@@ -1,0 +1,9 @@
+// 文字列からコードを生成・実行する経路を禁止する（eval は Biome の noGlobalEval が担当）
+or {
+  `new Function($args)`,
+  `Function($args)`,
+  `setTimeout($code, $delay)` where { $code <: string() },
+  `setInterval($code, $delay)` where { $code <: string() }
+} as $call where {
+  register_diagnostic(span=$call, message="文字列からコードを実行する呼び出しは禁止（Function コンストラクタ / 文字列を渡す setTimeout・setInterval）", severity="error")
+}
