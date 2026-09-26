@@ -14,7 +14,7 @@
 
 | ルール | 強制する仕組み |
 |---|---|
-| `innerHTML` / `outerHTML` / `insertAdjacentHTML` / `document.write` / `setHTMLUnsafe` / `createContextualFragment` を使わない | Biome プラグイン `biome-plugins/no-html-sinks.grit` |
+| `innerHTML` / `outerHTML` / `insertAdjacentHTML` / `document.write` / `document.writeln` / `setHTMLUnsafe` / `createContextualFragment` を使わない | Biome プラグイン `biome-plugins/no-html-sinks.grit` |
 | `eval` / `new Function` / 文字列を渡す `setTimeout`・`setInterval` を使わない | ソース: Biome `noGlobalEval` + `biome-plugins/no-dynamic-code.grit`。配布物（バンドルされた依存を含む）: 配布物検査が `eval` と `new Function` を検出 |
 | 高リスク GM API（`unsafeWindow` `GM_cookie` `GM_xmlhttpRequest` `GM_webRequest` `GM_download` `GM`）の import は理由付きの抑止コメントが必要 | Biome `noRestrictedImports` |
 | Promise の放置・誤用をしない | Biome `noFloatingPromises` / `noMisusedPromises` |
@@ -53,7 +53,8 @@
 
 ## 配信（main ブランチ）の保護
 
-- main へは PR 経由でマージし、CI 成功を必須にする（GitHub の Branch protection / Rulesets。リポジトリ作成後に設定）
+- main へは PR 経由でしか入らない。GitHub の Ruleset「protect-main」で強制している: PR 必須（承認数 0）・CI ジョブ `check` の成功必須（最新の main に追従していること）・強制 push 禁止・削除禁止・管理者も例外なし
+- 脆弱性は Private vulnerability reporting で非公開に受け付ける。Dependabot（アラート・セキュリティ更新）と secret scanning（push protection 付き）を有効にしている
 - GitHub アカウントは 2 要素認証を有効にする
 - GitHub のユーザー名・リポジトリ名を変えない。変えると旧名を第三者が取得して同名リポジトリを作り、導入済みの利用者全員へ更新を配れる（repojacking）。変える必要があるときは、先に全スクリプトの配信 URL を新しい場所へ移して版を上げ、利用者に行き渡ってから変える
 - `dist/` だけを手で編集しない（CI の再生成一致チェックで落ちる）
