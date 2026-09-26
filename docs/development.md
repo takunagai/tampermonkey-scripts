@@ -103,7 +103,8 @@ pnpm check   # lint → typecheck → test → build → check:dist
 
 - 仕様の確認は `references/` を先に読む。無い情報は公式ドキュメントで確認して `references/` に追記する
 - **Tampermonkey MCP**（`.mcp.json`、版固定 0.0.5、stdio）
-  - 接続: Claude に接続コードを発行させ（`tampermonkey_get_connection_code`）、Chrome の Tampermonkey Editors 拡張のポップアップに入力する。コードの発行は使う直前だけ
+  - 接続: Claude に接続コードを発行させ（`tampermonkey_get_connection_code`）、Chrome の Tampermonkey Editors 拡張（本体とは別の拡張）のポップアップ「Local editor via WebSocket」→「Connection code」に入力して Connect。コードの発行は使う直前だけ
+  - 切断: Tampermonkey Editors のポップアップに切断ボタンは無い（5.5.0 / Editors 実測、2026-09-26）。切断は MCP サーバー側を止める: Claude Code の `/mcp` で `tampermonkey` を Disable（再開時は Enable してコードを再発行）、または Claude Code を終了。ブラウザ側からは `chrome://extensions` で Tampermonkey Editors をオフにする。ポップアップ下部の「WebSocket status」で状態を確認できる
   - 接続直後に `tampermonkey_list` の結果がダッシュボードの実物と一致するか確認する（なりすまし検知。`references/tampermonkey-mcp.md`）
   - 用途: インストール済みスクリプトの版・内容とリポジトリの差分確認、ストレージの確認。`patch` / `put` / `delete` は権限設定で毎回確認になる
   - Chrome 安定版（5.5.0）では `put` / `delete` は使えない（5.6+ が必要）

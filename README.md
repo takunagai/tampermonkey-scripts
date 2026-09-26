@@ -164,7 +164,8 @@ references/        Tampermonkey 公式情報の要約
 - **Tampermonkey MCP**（`.mcp.json` に登録済み）を使うと、インストール済みスクリプトの一覧・内容・保存値を Claude Code から確認できる
   1. Chrome に [Tampermonkey Editors](https://chromewebstore.google.com/detail/lieodnapokbjkkdkhdljlllmgkmdokcm) を入れる
   2. Claude Code を起動し、プロジェクトの MCP サーバー `tampermonkey` を承認する
-  3. Claude に接続コードを発行させ、Tampermonkey Editors のポップアップに入力する
+  3. Claude に接続コードを発行させ、Tampermonkey Editors のポップアップ「Local editor via WebSocket」の「Connection code」に入力して Connect
+  4. 用が済んだら Claude Code の `/mcp` で `tampermonkey` を Disable して切断する（ポップアップに切断ボタンは無い）
 - この MCP は認証が弱い（`references/tampermonkey-mcp.md`）。接続コードは使う直前にだけ発行し、書き込み・削除は毎回確認が出る設定にしている
 
 ### うまくいかないとき
