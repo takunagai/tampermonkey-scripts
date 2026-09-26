@@ -50,6 +50,7 @@
 ```bash
 git clone https://github.com/takunagai/tampermonkey-scripts.git
 cd tampermonkey-scripts
+mise trust     # このリポジトリの mise.toml を信頼する（初回のみ。mise を使わない場合は省略）
 mise install   # Node.js と pnpm を入れる（mise を使わない場合は省略）
 pnpm install
 pnpm check     # すべて通れば環境は正常
@@ -156,7 +157,11 @@ references/        Tampermonkey 公式情報の要約
 1. `src/shared/meta.ts` の `REPOSITORY`（配信元）と `author` を自分のものに変える
 2. `LICENSE` の著作権者を変える
 3. 配信 URL が変わるので、残すスクリプトは `meta.ts` の `version` を上げてから `pnpm build`
-4. GitHub で Actions を有効にし、main ブランチに「PR 必須・CI 成功必須」の保護を設定する
+4. GitHub の Settings で次を設定する（本リポジトリと同じ構成）
+   - Actions を有効にする
+   - Rules → Rulesets で既定ブランチ（main）に: Require a pull request（承認数 0）・Require status checks to pass（`check`、最新のブランチ必須）・Block force pushes・Restrict deletions。バイパスは誰にも与えない
+   - Security → Private vulnerability reporting、Dependabot alerts、Dependabot security updates を有効にする（secret scanning と push protection は public リポジトリで既定有効）
+   - GitHub アカウントの 2 要素認証を有効にする
 
 ### Claude Code で開発する（任意）
 
@@ -165,8 +170,12 @@ references/        Tampermonkey 公式情報の要約
   1. Chrome に [Tampermonkey Editors](https://chromewebstore.google.com/detail/lieodnapokbjkkdkhdljlllmgkmdokcm) を入れる
   2. Claude Code を起動し、プロジェクトの MCP サーバー `tampermonkey` を承認する
   3. Claude に接続コードを発行させ、Tampermonkey Editors のポップアップ「Local editor via WebSocket」の「Connection code」に入力して Connect
-  4. 用が済んだら Claude Code の `/mcp` で `tampermonkey` を Disable して切断する（ポップアップに切断ボタンは無い）
+  4. 用が済んだら Claude Code の `/mcp` で `tampermonkey` を Disable して切断する（ポップアップに切断ボタンは無い）。次に使うときは Enable にして接続コードを発行し直す
 - この MCP は認証が弱い（`references/tampermonkey-mcp.md`）。接続コードは使う直前にだけ発行し、書き込み・削除は毎回確認が出る設定にしている
+- **chrome-devtools MCP**（実ページでの動作確認用。ログイン済みの普段使い Chrome に接続する）。公式手順: https://github.com/ChromeDevTools/chrome-devtools-mcp/blob/main/docs/advanced-usage.md
+  1. Chrome で `chrome://inspect/#remote-debugging` を開き、表示に従ってリモートデバッグを許可する
+  2. `claude mcp add chrome-devtools --scope user -- npx chrome-devtools-mcp@latest --autoConnect` で登録する
+  3. 初回に Claude が接続すると Chrome に許可ダイアログが出るので許可する。接続先は既定のプロファイルで、開いている全ウィンドウに触れられる点に注意
 
 ### うまくいかないとき
 
