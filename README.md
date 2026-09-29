@@ -20,6 +20,7 @@
 | スクリプト | 対象ページ | 概要 | 権限 | インストール |
 |---|---|---|---|---|
 | [Nous Portal Readability](src/nous-portal-readability/) | `portal.nousresearch.com` | 長体フォント・大文字化・広い字間を通常の表示に戻す（見た目のみ） | `GM_addStyle` | [install](https://raw.githubusercontent.com/takunagai/tampermonkey-scripts/main/dist/nous-portal-readability.user.js) |
+| [Telegram Custom Theme](src/telegram-custom-theme/) | `web.telegram.org/k/`（Web K 版） | メッセージの幅を広げてそろえ、間隔・余白・受信メッセージの上辺を調整する（見た目のみ） | `GM_addStyle` | [install](https://raw.githubusercontent.com/takunagai/tampermonkey-scripts/main/dist/telegram-custom-theme.user.js) |
 | [Z.ai Usage Auto Refresh](src/zai-usage-auto-refresh/) | `z.ai` GLM Coding Plan の Usage | リフレッシュボタンを 1 分ごとに自動で押す（タブ非表示中は停止） | なし（`@grant none`） | [install](https://raw.githubusercontent.com/takunagai/tampermonkey-scripts/main/dist/zai-usage-auto-refresh.user.js) |
 
 スクリプトを追加したら、この表に 1 行足す。
@@ -159,7 +160,7 @@ references/        Tampermonkey 公式情報の要約
 
 ```bash
 # 既存の非公開リポジトリがある場合
-git clone git@github.com:<owner>/tampermonkey-scripts-private.git private
+git clone https://github.com/<owner>/tampermonkey-scripts-private.git private
 
 # 新しく作る場合
 mkdir private && cd private && git init -b main

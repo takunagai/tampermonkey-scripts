@@ -56,6 +56,7 @@ Node 26 / pnpm 11.21.0（`mise.toml`）。`tools/*.ts` は Node の型ストリ�
 ### 実装済みスクリプトの設計判断
 
 - `nous-portal-readability`: サイトのフォント指定がクラス・CSS 変数・要素ごとに散らばるため、クラス名に依存せず `html *` に `!important` で文字まわり（font-family / font-stretch / font-variation-settings / text-transform / letter-spacing）だけを上書きする。サイト内蔵の `html.hpv2-a11y` モードは配色まで変わるので使っていない。等幅の役割の要素（`[class*="font-mono"]`）は本物の等幅フォントにする（サイトの `--font-mono` は長体フォント）
+- `telegram-custom-theme`: Web K 版（`/k/`）専用。幅の上限は `<html>` のインライン変数 `--chat-width` と `.bubbles-inner:not(.is-broadcast) .bubble { --max-width: 30rem }` の 2 段で、前者は `!important`、後者は Telegram 自身の `85%` に戻す。余白は子要素の margin で作られているので、padding に置き換えるときは子の外周 margin を 0 にする。角丸は `.bubble-content` の直指定ではなく `--border-start-*-radius` 変数で消す（中のメディアの角も追従する）
 - `zai-usage-auto-refresh`: SPA のため `@match` は `/manage-apikey/*`、押すかどうかは毎回パスで判定する。誤クリックを避けるため、`aria-label="Refresh"` + `svg.lucide-rotate-ccw` + `type="button"` + 表示中の候補がちょうど 1 つのときだけ押す。タブ非表示中は押さない
 
 ### セキュリティゲート（`docs/security.md` と一致させる）
