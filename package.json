@@ -28,7 +28,7 @@
     "happy-dom": "20.14.5",
     "tampermonkey-mcp": "0.0.5",
     "typescript": "7.0.2",
-    "vite": "8.3.1",
+    "vite": "8.3.3",
     "vite-plugin-monkey": "8.1.1",
     "vitest": "5.0.1"
   }
