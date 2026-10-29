@@ -25,7 +25,7 @@
   "devDependencies": {
     "@biomejs/biome": "2.5.14",
     "@types/node": "26.6.2",
-    "happy-dom": "20.14.5",
+    "happy-dom": "21.0.4",
     "tampermonkey-mcp": "0.0.5",
     "typescript": "7.0.2",
     "vite": "8.3.1",
